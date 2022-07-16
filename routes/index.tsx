@@ -8,11 +8,11 @@ import Button, { ButtonType } from "../components/reusableUI/Button.tsx";
 export default function Home() {
   const listItemClass = tw`flex gap-3 items-center`;
   return (
-    <div class={tw`p-4 mx-auto max-w-screen-md`}>
+    <div class={tw`p-6 mx-auto max-w-screen-md`}>
       <NavBar />
       <div class={tw`my-20`}>
-        <h1 class={tw`text-7xl`}>
-          Understand how users interact with your designs
+        <h1 class={tw`md:text-7xl text-3xl`}>
+          Behavioural science driven UX research platform
         </h1>
         <ul class={tw`my-10 font-thin text-xl`}>
           <li class={listItemClass}>
@@ -37,7 +37,7 @@ export default function Home() {
             </div>
           </li>
         </ul>
-        <div class={tw`flex gap-2`}>
+        <div class={tw`flex gap-2 flex-col md:flex-row`}>
           <a href="https://form.jotform.com/221962077087058" target="blank">
             <Button>
               <div class={tw`flex items-center gap-2`}>
