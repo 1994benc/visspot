@@ -3,7 +3,7 @@ import { h } from "preact";
 import { tw } from "@twind";
 import Button, { ButtonType } from "./reusableUI/Button.tsx";
 
-export default function NavBar() {
+export default function DashboardNavBar() {
   return (
     <div class={tw`flex justify-between items-center static top-0 w-full`}>
       <div>
@@ -17,8 +17,8 @@ export default function NavBar() {
       </div>
       <div class={tw`flex gap-3`}>
         {/* <Button type={ButtonType.Outline}>Flows</Button> */}
-        <a href="/dash/assets"><Button type={ButtonType.Outline}>Assets</Button></a>
-        {/* <Button type={ButtonType.Main}>Login</Button> */}
+        <a href="/dash/assets"><Button type={ButtonType.Main}>Assets</Button></a>
+        <a href="/api/auth/logout"><Button type={ButtonType.Outline}>Logout</Button></a>
       </div>
     </div>
   );
