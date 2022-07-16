@@ -59,7 +59,7 @@ export default function Home() {
               </div>
             </Button>
           </a>
-          <a href="https://github.com/1994benc/VisSpot.com" target="blank">
+          <a href="https://github.com/1994benc/visspot" target="blank">
             <Button type={ButtonType.Outline}>
               <div class={tw`flex items-center gap-2`}>
                 <img src="/github.svg" class={tw`h-6 w-6`} alt="" />
