@@ -1,4 +1,4 @@
-# Visspot: Make your static design images interactive and see how users use them with customisable Implicit Response Tests (IRT)
+# Visspot: Make your static design images interactive and learn how users use them through our customisable Implicit Response Tests (IRT)
 
 ### Usage
 
