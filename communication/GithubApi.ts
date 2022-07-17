@@ -1,4 +1,5 @@
 import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
+import { User } from "../models/User.ts";
 
 export class GitHubApi {
   async getAccessToken(code: string) {
@@ -40,11 +41,13 @@ export class GitHubApi {
       throw new Error(await response.text());
     }
     const userData = await response.json();
-    return {
-      userId: userData.id as number,
-      userName: userData.login as string,
-      avatarUrl: userData["avatar_url"] as string,
-    };
+    const data = new User(
+      (userData["id"] as number)?.toString(),
+      userData["login"] as string,
+      userData["avatar_url"] as string
+    );
+
+    return data;
   }
 }
 

@@ -1,32 +1,37 @@
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { getCookies } from "https://deno.land/std@0.148.0/http/cookie.ts";
 import { setCookie } from "https://deno.land/std@0.148.0/http/cookie.ts";
+import { DatabaseProvider } from "../communication/DatabaseProvider.ts";
 import { gitHubApi } from "../communication/GithubApi.ts";
-
-export interface User {
-  userId: number;
-  userName: string;
-  avatarUrl: string;
-}
+import { User } from "../models/User.ts";
+import { getUserByOauthId } from "../services/users/getUserByOauthUserId.ts";
+import { insertUser } from "../services/users/insertUser.ts";
 
 export async function authenticationMiddlewareHandler(
   req: Request,
   ctx: MiddlewareHandlerContext<User>
 ) {
   try {
+    const dbProvider = new DatabaseProvider();
+    await dbProvider.connect();
+    const db = dbProvider.db;
+
+    if (!db) {
+      console.log("No DB connection");
+      return redirectToSignInPage(req);
+    }
+
     // Get cookie from request header and parse it
     const maybeAccessToken = getCookies(req.headers)["acctoken"];
-    //   const database = await databaseLoader.getInstance();
     if (maybeAccessToken) {
       const userData = await gitHubApi.getUserData(maybeAccessToken);
       setUserDataInCtxState(ctx, userData);
 
-      // const user = await database.getUserByAccessToken(maybeAccessToken);
-      // if (user) {
-      if (userData.userId) {
+      const userFromDb = await getUserByOauthId(userData.userId.toString(), db);
+
+      if (userData.userId && userFromDb) {
         return ctx.next();
       }
-      // }
     }
 
     // This is an oauth callback request.
@@ -41,12 +46,13 @@ export async function authenticationMiddlewareHandler(
     const userData = await gitHubApi.getUserData(accessToken);
     setUserDataInCtxState(ctx, userData);
 
-    //   await database.insertUser({
-    //     userId: userData.userId,
-    //     userName: userData.userName,
-    //     accessToken,
-    //     avatarUrl: userData.avatarUrl,
-    //   });
+    const userObjectId = await insertUser(userData, db);
+
+    if (!userObjectId) {
+      console.log("User not inserted");
+      return redirectToSignInPage(req);
+    }
+
     const response = await ctx.next();
     setCookie(response.headers, {
       name: "acctoken",
@@ -54,9 +60,10 @@ export async function authenticationMiddlewareHandler(
       maxAge: 60 * 60 * 24 * 7,
       httpOnly: true,
     });
+    dbProvider.disconnect();
     return response;
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return redirectToSignInPage(req);
   }
 }
@@ -68,9 +75,9 @@ function redirectToSignInPage(req: Request) {
 
 function setUserDataInCtxState(
   ctx: MiddlewareHandlerContext<User>,
-  userData: { userId: number; userName: string; avatarUrl: string }
+  userData: User
 ) {
-  ctx.state.userId = userData.userId;
+  ctx.state.userId = userData.userId?.toString();
   ctx.state.userName = userData.userName;
   ctx.state.avatarUrl = userData.avatarUrl;
 }

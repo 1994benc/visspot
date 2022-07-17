@@ -18,7 +18,7 @@ export  function handler(
 
 export default function index(props: PageProps) {
   return (
-    <DashboardLayout>
+    <DashboardLayout avatarUrl={props.data?.avatarUrl}>
       <div>
         <h1>This is your dashboard</h1>
         {JSON.stringify(props.data)}
