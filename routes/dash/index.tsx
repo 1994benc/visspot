@@ -1,28 +1,131 @@
 /** @jsx h */
 
-import { HandlerContext, PageProps } from "https://deno.land/x/fresh@1.0.1/server.ts";
+import {
+  HandlerContext,
+  Handlers,
+  PageProps,
+} from "https://deno.land/x/fresh@1.0.1/server.ts";
 import { h } from "preact";
 import DashboardLayout from "../../components/layouts/DashboardLayout.tsx";
+import { tw } from "@twind";
+import Button from "../../components/reusableUI/Button.tsx";
+import { insertProject } from "../../backendServices/projects/insertProject.ts";
+import { Project, ProjectSchema } from "../../models/Project.ts";
+import { DatabaseProvider } from "../../communication/DatabaseProvider.ts";
+import { findProjectsByCreatorId } from "../../backendServices/projects/findProjectsByCreatorId.ts";
 
-export  function handler(
-  req: Request,
-  ctx: HandlerContext
-){
-  const userData = ctx.state;
-  const resp =  ctx.render({
-    ...userData
-  })
-  console.log(userData)
-  return resp
+async function getHandler(req: Request, ctx: HandlerContext) {
+  const middlewareState = ctx.state;
+
+  const dbProvider = new DatabaseProvider();
+  await dbProvider.connect();
+  const db = dbProvider.db;
+  if (!db) {
+    return new Response("Could not connect to database", {
+      status: 500,
+    });
+  }
+
+  const projects = await findProjectsByCreatorId(
+    middlewareState.userId + "",
+    db
+  );
+
+  const resp = ctx.render({
+    ...middlewareState,
+    projects: projects || [],
+  });
+  return resp;
 }
+
+async function postHandler(req: Request, ctx: HandlerContext) {
+  const middlewareState = ctx.state;
+  const dbProvider = new DatabaseProvider();
+  await dbProvider.connect();
+  const db = dbProvider.db;
+  if (!db) {
+    return new Response("Could not connect to database", {
+      status: 500,
+    });
+  }
+
+  const projectName = (await req.formData()).get("project_name")?.toString();
+  console.log(projectName);
+
+  if (projectName) {
+    const project = new Project(projectName, "", middlewareState.userId + "");
+    const objectId = await insertProject(project, db);
+    console.log("Inserted project with id: " + objectId);
+  }
+
+  const projects = await findProjectsByCreatorId(
+    middlewareState.userId + "",
+    db
+  );
+
+  const resp = ctx.render({
+    ...middlewareState,
+    projects: projects || [],
+  });
+  return resp;
+}
+
+export const handler: Handlers = {
+  async GET(req, ctx) {
+    return await getHandler(req, ctx);
+  },
+  async POST(req, ctx) {
+    return await postHandler(req, ctx);
+  },
+};
 
 export default function index(props: PageProps) {
   return (
     <DashboardLayout avatarUrl={props.data?.avatarUrl}>
       <div>
-        <h1>This is your dashboard</h1>
-        {JSON.stringify(props.data)}
+        <div class={tw`flex items-center gap-4 justify-between`}>
+          <h1>Your projects</h1>
+          <NewProjectForm />
+        </div>
+
+        <div>
+          <ProjectList projects={props.data.projects} />
+        </div>
       </div>
     </DashboardLayout>
+  );
+}
+
+function ProjectList({ projects }: { projects: ProjectSchema[] }) {
+  return (
+    <div class={tw`flex gap-3 flex-wrap my-3`}>
+      {projects?.map((project) => (
+        <a
+          key={project._id.toString()}
+          href={`/dash/projects/${project._id.toString()}`}
+        >
+          <div
+            class={tw`border px-3 py-2 rounded-lg hover:shadow-lg transition-all cursor-pointer`}
+          >
+            <div>{project.name}</div>
+            <div>{project.description}</div>
+          </div>
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function NewProjectForm() {
+  return (
+    <form method="POST" class={tw`flex gap-2`}>
+      <input
+        class={tw`border border-black rounded-lg py-2 px-3`}
+        placeholder="Project name"
+        type="text"
+        name="project_name"
+      />
+      <Button isSubmitButton>New project</Button>
+    </form>
   );
 }

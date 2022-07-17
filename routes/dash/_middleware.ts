@@ -1,6 +1,7 @@
 // routes/_middleware.ts
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
-import { authenticationMiddlewareHandler, User } from "../../middlewareHandlers/authenticationMiddlewareHandler.ts";
+import { authenticationMiddlewareHandler } from "../../middlewareHandlers/authenticationMiddlewareHandler.ts";
+import { User } from "../../models/User.ts";
 
 
 export async function handler(

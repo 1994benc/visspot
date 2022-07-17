@@ -16,17 +16,20 @@ const variantClasses = {
 export default function Button({
   children,
   type,
+  isSubmitButton,
 }: {
   children: h.JSX.Element | string;
   type?: ButtonType;
+  isSubmitButton?: boolean;
 }) {
   return (
-    <div
+    <button
+      type={isSubmitButton ? "submit" : "button"}
       class={tw`${
         variantClasses[type || ButtonType.Main]
       }  transition-all duration-200  cursor-pointer px-6 py-2 rounded-lg flex justify-between gap-2`}
     >
       {children}
-    </div>
+    </button>
   );
 }

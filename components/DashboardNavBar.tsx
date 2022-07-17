@@ -21,7 +21,7 @@ export default function DashboardNavBar({
       </div>
       <div class={tw`flex gap-3`}>
         {/* <Button type={ButtonType.Outline}>Flows</Button> */}
-        <a href="/dash/assets"><Button type={ButtonType.Main}>Assets</Button></a>
+        {/* <a href="/dash/assets"><Button type={ButtonType.Main}>Assets</Button></a> */}
         {avatarUrl && <a href="/dash/profile"><img src={avatarUrl} class={tw`rounded-full w-10`} alt="" /></a>}
       </div>
     </div>

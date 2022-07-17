@@ -4,8 +4,8 @@ import { setCookie } from "https://deno.land/std@0.148.0/http/cookie.ts";
 import { DatabaseProvider } from "../communication/DatabaseProvider.ts";
 import { gitHubApi } from "../communication/GithubApi.ts";
 import { User } from "../models/User.ts";
-import { getUserByOauthId } from "../services/users/getUserByOauthUserId.ts";
-import { insertUser } from "../services/users/insertUser.ts";
+import { getUserByOauthId } from "../backendServices/users/getUserByOauthUserId.ts";
+import { insertUser } from "../backendServices/users/insertUser.ts";
 
 export async function authenticationMiddlewareHandler(
   req: Request,

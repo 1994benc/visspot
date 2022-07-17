@@ -9,8 +9,9 @@ import * as $3 from "./routes/dash/_middleware.ts";
 import * as $4 from "./routes/dash/assets/index.tsx";
 import * as $5 from "./routes/dash/index.tsx";
 import * as $6 from "./routes/dash/profile/index.tsx";
-import * as $7 from "./routes/index.tsx";
-import * as $8 from "./routes/sign-in.tsx";
+import * as $7 from "./routes/dash/projects/[projectId].tsx";
+import * as $8 from "./routes/index.tsx";
+import * as $9 from "./routes/sign-in.tsx";
 import * as $$0 from "./islands/Counter.tsx";
 
 const manifest = {
@@ -22,8 +23,9 @@ const manifest = {
     "./routes/dash/assets/index.tsx": $4,
     "./routes/dash/index.tsx": $5,
     "./routes/dash/profile/index.tsx": $6,
-    "./routes/index.tsx": $7,
-    "./routes/sign-in.tsx": $8,
+    "./routes/dash/projects/[projectId].tsx": $7,
+    "./routes/index.tsx": $8,
+    "./routes/sign-in.tsx": $9,
   },
   islands: {
     "./islands/Counter.tsx": $$0,
