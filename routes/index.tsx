@@ -12,7 +12,7 @@ export default function Home() {
       <NavBar />
       <div class={tw`my-20`}>
         <h1 class={tw`md:text-7xl text-3xl`}>
-          Behavioural science driven UX research platform
+          Behavioural testing platform
         </h1>
         <ul class={tw`my-10 font-thin text-xl`}>
           <li class={listItemClass}>
