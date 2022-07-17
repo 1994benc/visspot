@@ -35,6 +35,8 @@ async function getHandler(req: Request, ctx: HandlerContext) {
     ...middlewareState,
     projects: projects || [],
   });
+
+  dbProvider.disconnect();
   return resp;
 }
 
@@ -62,6 +64,8 @@ async function postHandler(req: Request, ctx: HandlerContext) {
     middlewareState.userId + "",
     db
   );
+  
+  dbProvider.disconnect();
 
   const resp = ctx.render({
     ...middlewareState,
@@ -124,6 +128,7 @@ function NewProjectForm() {
         placeholder="Project name"
         type="text"
         name="project_name"
+        required
       />
       <Button isSubmitButton>New project</Button>
     </form>
