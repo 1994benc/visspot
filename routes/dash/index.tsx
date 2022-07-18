@@ -13,6 +13,8 @@ import { insertProject } from "../../backendServices/projects/insertProject.ts";
 import { Project, ProjectSchema } from "../../models/Project.ts";
 import { DatabaseProvider } from "../../communication/DatabaseProvider.ts";
 import { findProjectsByCreatorId } from "../../backendServices/projects/findProjectsByCreatorId.ts";
+import CardButton from "../../components/reusableUI/CardButton.tsx";
+import Heading from "../../components/reusableUI/Heading.tsx";
 
 async function getHandler(req: Request, ctx: HandlerContext) {
   const middlewareState = ctx.state;
@@ -64,7 +66,7 @@ async function postHandler(req: Request, ctx: HandlerContext) {
     middlewareState.userId + "",
     db
   );
-  
+
   dbProvider.disconnect();
 
   const resp = ctx.render({
@@ -88,7 +90,7 @@ export default function index(props: PageProps) {
     <DashboardLayout avatarUrl={props.data?.avatarUrl}>
       <div>
         <div class={tw`flex items-center gap-4 justify-between`}>
-          <h1>Your projects</h1>
+          <Heading><div>Your projects</div></Heading>
           <NewProjectForm />
         </div>
 
@@ -108,12 +110,12 @@ function ProjectList({ projects }: { projects: ProjectSchema[] }) {
           key={project._id.toString()}
           href={`/dash/projects/${project._id.toString()}`}
         >
-          <div
-            class={tw`border px-3 py-2 rounded-lg hover:shadow-lg transition-all cursor-pointer`}
-          >
-            <div>{project.name}</div>
-            <div>{project.description}</div>
-          </div>
+          <CardButton>
+            <div>
+              <div>{project.name}</div>
+              <div>{project.description}</div>
+            </div>
+          </CardButton>
         </a>
       ))}
     </div>

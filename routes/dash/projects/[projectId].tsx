@@ -8,6 +8,8 @@ import { DatabaseProvider } from "../../../communication/DatabaseProvider.ts";
 import { deleteProjectByObjectId } from "../../../backendServices/projects/deleteProjectByObjectId.ts";
 import { findProjectByObjectId } from "../../../backendServices/projects/findProjectByObjectId.ts";
 import { ProjectSchema } from "../../../models/Project.ts";
+import CardButton from "../../../components/reusableUI/CardButton.tsx";
+import Heading from "../../../components/reusableUI/Heading.tsx";
 
 export const handler: Handlers = {
   async GET(req, ctx) {
@@ -50,11 +52,9 @@ export const handler: Handlers = {
       console.log({ projectId, deleteNum });
 
       const url = new URL(req.url).origin + "/dash";
-      dbProvider.disconnect()
+      dbProvider.disconnect();
       return Response.redirect(url);
     }
-
-    
 
     const resp = ctx.render();
     return resp;
@@ -68,13 +68,26 @@ export default function ProjectPage(props: PageProps) {
     <DashboardLayout avatarUrl={props.data.avatarUrl}>
       <div>
         <div class={`flex items-center justify-between`}>
-          <h1>{project.name}</h1>
+          <Heading><div>{project.name}</div></Heading>
           <form method="post">
             <input type="text" name="delete_project" value={projectId} hidden />
             <Button isSubmitButton type={ButtonType.Outline}>
               Delete
             </Button>
           </form>
+        </div>
+
+        <div>
+          <div class={tw`flex gap-3 my-4 items-center`}>
+            <a href={`/dash/assets/${projectId}`}>
+              <CardButton>
+                <div>Assets</div>
+              </CardButton>
+            </a>
+            <CardButton>
+              <div>Test flows</div>
+            </CardButton>
+          </div>
         </div>
       </div>
     </DashboardLayout>
